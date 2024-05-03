@@ -1,9 +1,11 @@
 from django.contrib.auth.decorators import login_required
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from .forms import CreateDriverForm, DriverLicenseUpdateForm
 from .models import Driver, Car, Manufacturer
 
 
@@ -87,3 +89,41 @@ class DriverListView(LoginRequiredMixin, generic.ListView):
 class DriverDetailView(LoginRequiredMixin, generic.DetailView):
     model = Driver
     queryset = Driver.objects.all().prefetch_related("cars__manufacturer")
+
+
+class DriverCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Driver
+    fields = "__all__"
+    success_url = reverse_lazy("taxi:driver-list")
+    form_class = CreateDriverForm
+
+
+class DriverDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Driver
+    success_url = reverse_lazy("taxi:driver-list")
+
+
+class DriverUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = Driver
+    form_class = DriverLicenseUpdateForm
+    success_url = reverse_lazy("taxi:driver-list")
+
+
+@login_required
+def toggle_assign_to_car(
+        request: HttpRequest,
+        pk: int
+) -> HttpResponse:
+    if request.method == "POST":
+        car = Car.objects.get(pk=pk)
+        if request.user in car.drivers.all():
+            car.drivers.remove(request.user)
+        else:
+            car.drivers.add(request.user)
+        car.save()
+    return HttpResponseRedirect(
+        reverse(
+            "taxi:car-detail",
+            kwargs={"pk": pk}
+        )
+    )
