@@ -50,7 +50,7 @@ class CreateDriverForm(forms.ModelForm):
         fields = UserCreationForm.Meta.fields + (
             "license_number",
             "first_name",
-            "last_name"
+            "last_name",
         )
 
 
