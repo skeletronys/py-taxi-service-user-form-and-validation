@@ -6,8 +6,7 @@ from django.core.validators import MaxLengthValidator, MinLengthValidator
 
 from taxi.models import Driver, Car
 
-MIN_LEN_LICENSE_NUMBER = 8
-MAX_LEN_LICENSE_NUMBER = 8
+MIN_MAX_LEN_LICENSE_NUMBER = 8
 
 
 def validate_license(value: str) -> None:
@@ -25,8 +24,8 @@ def validate_license(value: str) -> None:
 class DriverLicenseUpdateForm(forms.ModelForm):
     license_number = forms.CharField(
         validators=(
-            MaxLengthValidator(MAX_LEN_LICENSE_NUMBER),
-            MinLengthValidator(MIN_LEN_LICENSE_NUMBER),
+            MaxLengthValidator(MIN_MAX_LEN_LICENSE_NUMBER),
+            MinLengthValidator(MIN_MAX_LEN_LICENSE_NUMBER),
             validate_license,
         )
     )
@@ -39,8 +38,8 @@ class DriverLicenseUpdateForm(forms.ModelForm):
 class CreateDriverForm(forms.ModelForm):
     license_number = forms.CharField(
         validators=(
-            MaxLengthValidator(MAX_LEN_LICENSE_NUMBER),
-            MinLengthValidator(MIN_LEN_LICENSE_NUMBER),
+            MaxLengthValidator(MIN_MAX_LEN_LICENSE_NUMBER),
+            MinLengthValidator(MIN_MAX_LEN_LICENSE_NUMBER),
             validate_license,
         )
     )
