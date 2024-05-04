@@ -11,14 +11,14 @@ MAX_LEN_LICENSE_NUMBER = 8
 
 
 def validate_license(value: str) -> None:
-    if value[:3] != value[:3].upper() or not value[:3].isalpha():
+    if not value[:3].isupper() or not value[:3].isalpha():
         raise ValidationError(
-            "License number must starts with 3 upper case letters"
+            "License number must start with 3 uppercase letters"
         )
 
     if not value[-5:].isdigit():
         raise ValidationError(
-            "License number must ends with 5 digits"
+            "License number must end with 5 digits"
         )
 
 
